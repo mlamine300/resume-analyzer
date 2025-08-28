@@ -1,24 +1,113 @@
-import React, { useState, type FormEvent } from "react";
+import React, { useEffect, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router";
 import FileUploader from "~/components/FileUploader";
 import NavBar from "~/components/NavBar";
+import { usePuterStore } from "~/lib/puter";
+import { convertPdfToImage } from "~/lib/pdf2img";
+
+import { prepareInstructions } from "~/constants";
 
 const Upload = () => {
+  const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { ai, fs, kv, auth } = usePuterStore();
+
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      //alert("not auth");
+      navigate("/auth?next=upload");
+    }
+  }, [auth.isAuthenticated]);
 
   const handleFileSelection: (file: File | null) => void = (file) => {
     setSelectedFile(file);
   };
-  const handleSubmit: (e: FormEvent<HTMLFormElement>) => void = (e) => {
+
+  const analyze = async ({
+    companyName,
+    jobTitle,
+    jobDescription,
+    resumeFile,
+  }: {
+    companyName: string;
+    jobTitle: string;
+    jobDescription: string;
+    resumeFile: File;
+  }): Promise<string> => {
+    // Placeholder for actual analysis logic
+
+    setIsProcessing(true);
+    setStatus("Uploading resume...");
+    const file = await fs.upload([resumeFile]);
+    if (!file) {
+      console.log("could not upload resume!");
+      return "";
+    }
+    setStatus("Converting PDF to image...");
+    const image = await convertPdfToImage(selectedFile!);
+    if (!image) {
+      console.log("could not convert pdf to image !");
+      return "";
+    }
+
+    if (!image.file) {
+      console.log("image.file is null!");
+      setIsProcessing(false);
+      return "";
+    }
+    setStatus("Uploading image...");
+    const imageFile = await fs.upload([image.file]);
+
+    if (!imageFile) {
+      console.log("could not upload image!");
+      return "";
+    }
+    const uuid = crypto.randomUUID;
+    const data = {
+      companyName,
+      jobTitle,
+      jobDescription,
+      path: file?.path,
+      imagePath: imageFile?.path,
+      createdAt: new Date().toISOString(),
+      id: uuid,
+      feedBack: "",
+    };
+    const message = prepareInstructions({ jobTitle, jobDescription });
+    setStatus("Analyzing resume...");
+    const feedback = await ai.feedback(file?.path || "", message);
+    if (!feedback) {
+      console.log("could not get feedback!");
+      return "";
+    }
+    data.feedBack = JSON.stringify(feedback);
+    kv.set(`resume-${uuid}`, JSON.stringify(data));
+    console.log(feedback);
+
+    setStatus("Analysis complete!");
+    setIsProcessing(false);
+    navigate(`/resume/${uuid}`);
+    return feedback.message.content as string;
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form: HTMLFormElement | null = e.currentTarget.closest("form");
     if (!form) return;
     const formData = new FormData(form);
-    const companyName = formData.get("company-name");
-    const jobTitle = formData.get("job-title");
-    const jobDescription = formData.get("job-description");
-    console.log({ companyName, jobTitle, jobDescription, selectedFile });
+    const companyName = formData.get("company-name") as string;
+    const jobTitle = formData.get("job-title") as string;
+    const jobDescription = formData.get("job-description") as string;
+    if (!selectedFile) return;
+    const feedback = await analyze({
+      companyName,
+      jobTitle,
+      jobDescription,
+      resumeFile: selectedFile,
+    });
+    //console.log({ companyName, jobTitle, jobDescription, selectedFile });
   };
   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen  px-4">
@@ -34,12 +123,13 @@ const Upload = () => {
         </div>
         <div className="w-full !max-w-2xl mb-2 flex items-start">
           {isProcessing ? (
-            <div>
+            <div className="w-full flex flex-col items-center justify-center">
               <img
                 src="images/resume-scan.gif"
                 alt="scanning..."
                 className="w-full"
               />
+              <h1 className="!text-4xl text-gradient">{status} </h1>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
@@ -50,6 +140,7 @@ const Upload = () => {
                   id="company-name"
                   name="company-name"
                   placeholder="Company name"
+                  required
                 />
               </div>
 
@@ -60,6 +151,7 @@ const Upload = () => {
                   name="job-title"
                   id="job-title"
                   placeholder="Job Title"
+                  required
                 />
               </div>
 
@@ -70,6 +162,7 @@ const Upload = () => {
                   id="job-description"
                   name="job-description"
                   placeholder="Job description"
+                  required
                 />
 
                 <div className="form-div">

@@ -56,6 +56,7 @@ interface PuterStore {
     refreshUser: () => Promise<void>;
     checkAuthStatus: () => Promise<boolean>;
     getUser: () => PuterUser | null;
+    isSignedIn?: () => Promise<boolean>;
   };
   fs: {
     write: (
@@ -114,6 +115,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         refreshUser: get().auth.refreshUser,
         checkAuthStatus: get().auth.checkAuthStatus,
         getUser: get().auth.getUser,
+        isSignedIn: get().auth.isSignedIn,
       },
     });
   };
@@ -140,6 +142,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
             refreshUser: get().auth.refreshUser,
             checkAuthStatus: get().auth.checkAuthStatus,
             getUser: () => user,
+            isSignedIn: get().auth.isSignedIn,
           },
           isLoading: false,
         });
@@ -154,6 +157,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
             refreshUser: get().auth.refreshUser,
             checkAuthStatus: get().auth.checkAuthStatus,
             getUser: () => null,
+            isSignedIn: get().auth.isSignedIn,
           },
           isLoading: false,
         });
@@ -205,6 +209,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
           refreshUser: get().auth.refreshUser,
           checkAuthStatus: get().auth.checkAuthStatus,
           getUser: () => null,
+          isSignedIn: get().auth.isSignedIn,
         },
         isLoading: false,
       });
@@ -234,6 +239,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
           refreshUser: get().auth.refreshUser,
           checkAuthStatus: get().auth.checkAuthStatus,
           getUser: () => user,
+          isSignedIn: get().auth.isSignedIn,
         },
         isLoading: false,
       });
@@ -425,6 +431,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       refreshUser,
       checkAuthStatus,
       getUser: () => get().auth.user,
+      isSignedIn: get()?.auth?.isSignedIn,
     },
     fs: {
       write: (path: string, data: string | File | Blob) => write(path, data),

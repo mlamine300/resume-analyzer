@@ -10,15 +10,16 @@ export const meta = () => {
   ];
 };
 const Auth = () => {
+  //alert("auth....");
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoading, auth } = usePuterStore();
   const nextPath = location.search.split("next=")[1] || "/";
   useEffect(() => {
-    if (nextPath && nextPath !== "/" && nextPath !== "/auth") {
-      if (auth.isAuthenticated) {
-        navigate(nextPath);
-      }
+    if (auth.isAuthenticated) {
+      if (nextPath && nextPath !== "/" && nextPath !== "/auth")
+        navigate(`/${nextPath}`);
+      else navigate("/");
     }
   }, [nextPath, auth.isAuthenticated]);
 
@@ -64,7 +65,7 @@ const Auth = () => {
                         placeholder="Email"
                         className="p-4 font-semibold text-xl"
                         //className="w-full p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
+                        // required
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -74,7 +75,7 @@ const Auth = () => {
                         name="password"
                         placeholder="Password"
                         className="p-4 font-semibold text-xl"
-                        required
+                        // required
                       />
                     </div>
                     <button
