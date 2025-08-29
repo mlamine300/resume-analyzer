@@ -5,4 +5,5 @@ export type Resume = {
   imagePath: string;
   resumePath: string;
   feedback: any;
+  createdAt?: string;
 };

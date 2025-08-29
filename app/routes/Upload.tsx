@@ -43,12 +43,14 @@ const Upload = () => {
     const file = await fs.upload([resumeFile]);
     if (!file) {
       console.log("could not upload resume!");
+      setIsProcessing(false);
       return "";
     }
     setStatus("Converting PDF to image...");
     const image = await convertPdfToImage(selectedFile!);
     if (!image) {
       console.log("could not convert pdf to image !");
+      setIsProcessing(false);
       return "";
     }
 
@@ -62,28 +64,30 @@ const Upload = () => {
 
     if (!imageFile) {
       console.log("could not upload image!");
+      setIsProcessing(false);
       return "";
     }
-    const uuid = crypto.randomUUID;
+    const uuid = crypto.randomUUID();
     const data = {
       companyName,
       jobTitle,
       jobDescription,
-      path: file?.path,
+      resumePath: file?.path,
       imagePath: imageFile?.path,
       createdAt: new Date().toISOString(),
       id: uuid,
-      feedBack: "",
+      feedback: "",
     };
     const message = prepareInstructions({ jobTitle, jobDescription });
     setStatus("Analyzing resume...");
     const feedback = await ai.feedback(file?.path || "", message);
     if (!feedback) {
       console.log("could not get feedback!");
+      setIsProcessing(false);
       return "";
     }
-    data.feedBack = JSON.stringify(feedback);
-    kv.set(`resume-${uuid}`, JSON.stringify(data));
+    data.feedback = JSON.stringify(feedback);
+    kv.set(`resume:${uuid}`, JSON.stringify(data));
     console.log(feedback);
 
     setStatus("Analysis complete!");
