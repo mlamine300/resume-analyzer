@@ -20,6 +20,7 @@ export default function Home() {
 
   const [resumes, setResumes] = useState<Resume[]>([]);
   const navigate = useNavigate();
+  console.log(auth);
   useEffect(() => {
     if (auth && !auth.isAuthenticated) {
       navigate("/auth");

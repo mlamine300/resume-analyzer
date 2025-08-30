@@ -5,6 +5,7 @@ import {
   AccordionHeader,
   AccordionItem,
 } from "./Accordion";
+import ContentBadge from "./ContentBadge";
 
 const ScoreBadge = ({ score }: { score: number }) => {
   const badgeColor =
@@ -41,7 +42,7 @@ const Content = ({ feedback }: { feedback: any }) => {
             </div>
           </AccordionHeader>
           <AccordionContent itemId="toneAndStyle" className="bg-white">
-            <p>This is the content of section 1.</p>
+            <ContentBadge content={feedback.toneAndStyle} />
           </AccordionContent>
         </AccordionItem>
         {/* -------------------------------- */}
@@ -53,7 +54,7 @@ const Content = ({ feedback }: { feedback: any }) => {
             </div>
           </AccordionHeader>
           <AccordionContent itemId="Content" className="bg-white">
-            <p>This is the content of section 2.</p>
+            <ContentBadge content={feedback.content} />
           </AccordionContent>
         </AccordionItem>
         {/* -------------------------------- */}
@@ -65,7 +66,7 @@ const Content = ({ feedback }: { feedback: any }) => {
             </div>
           </AccordionHeader>
           <AccordionContent itemId="Structure" className="bg-white">
-            <p>This is the content of section 3.</p>
+            <ContentBadge content={feedback.structure} />
           </AccordionContent>
         </AccordionItem>
         {/* -------------------------------- */}
@@ -77,7 +78,7 @@ const Content = ({ feedback }: { feedback: any }) => {
             </div>
           </AccordionHeader>
           <AccordionContent itemId="Skills" className="bg-white">
-            <p>This is the content of section 4.</p>
+            <ContentBadge content={feedback.skills} />
           </AccordionContent>
         </AccordionItem>
         {/* -------------------------------- */}

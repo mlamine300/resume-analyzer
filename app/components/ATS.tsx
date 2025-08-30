@@ -1,8 +1,6 @@
-const ATS = ({
-  ats,
-}: {
-  ats: { score: number; tips: { type: "good" | "improve"; tip: string }[] };
-}) => {
+import type { feedbackDetails } from "~/types";
+
+const ATS = ({ ats }: { ats: feedbackDetails }) => {
   const icon =
     ats.score < 50
       ? "/public/icons/ats-bad.svg"

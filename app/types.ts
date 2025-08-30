@@ -7,3 +7,12 @@ export type Resume = {
   feedback: any;
   createdAt?: string;
 };
+
+export type feedbackDetails = {
+  score: number;
+  tips: {
+    type: "good" | "improve";
+    tip: string;
+    explanation?: string;
+  }[];
+};
