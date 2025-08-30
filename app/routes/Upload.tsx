@@ -14,12 +14,12 @@ const Upload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { ai, fs, kv, auth } = usePuterStore();
 
-  useEffect(() => {
-    if (!auth.isAuthenticated) {
-      //alert("not auth");
-      navigate("/auth?next=upload");
-    }
-  }, [auth.isAuthenticated]);
+  // useEffect(() => {
+  //   if (!auth.isAuthenticated) {
+  //     //alert("not auth");
+  //     navigate("/auth?next=upload");
+  //   }
+  // }, [auth.isAuthenticated]);
 
   const handleFileSelection: (file: File | null) => void = (file) => {
     setSelectedFile(file);
@@ -76,7 +76,7 @@ const Upload = () => {
       imagePath: imageFile?.path,
       createdAt: new Date().toISOString(),
       id: uuid,
-      feedback: "",
+      feedback: {},
     };
     const message = prepareInstructions({ jobTitle, jobDescription });
     setStatus("Analyzing resume...");
@@ -86,7 +86,7 @@ const Upload = () => {
       setIsProcessing(false);
       return "";
     }
-    data.feedback = JSON.stringify(feedback);
+    data.feedback = JSON.parse(feedback.message.content as string);
     kv.set(`resume:${uuid}`, JSON.stringify(data));
     console.log(feedback);
 

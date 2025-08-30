@@ -21,7 +21,7 @@ export default function Home() {
   const [resumes, setResumes] = useState<Resume[]>([]);
   const navigate = useNavigate();
   useEffect(() => {
-    if (!auth.isAuthenticated) {
+    if (auth && !auth.isAuthenticated) {
       navigate("/auth");
     }
   }, [auth.isAuthenticated]);
@@ -32,11 +32,10 @@ export default function Home() {
 
       const data = allKeys?.map((item) => JSON.parse(item.value));
       setResumes(data);
-      console.log(data);
-      console.log(resumes);
+      console.log(allKeys);
     };
     fetchResumes();
-  });
+  }, []);
   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen">
       <NavBar />

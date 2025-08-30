@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { Resume } from "~/types";
 import ScoreCircle from "./ScoreCircle";
 import { Link } from "react-router";
+import { usePuterStore } from "~/lib/puter";
 
 const ResumeCard = ({ resume }: { resume: Resume }) => {
+  const { fs } = usePuterStore();
+  const [resumeUrl, setResumeUrl] = useState("");
+
+  useEffect(() => {
+    const loadResume = async () => {
+      const blob = await fs.read(resume.imagePath);
+      if (!blob) return;
+      let url = URL.createObjectURL(blob);
+      setResumeUrl(url);
+      console.log(url);
+    };
+
+    loadResume();
+  }, [resume.imagePath]);
+
   return (
     <Link
       to={`/resume/${resume.id}`}
@@ -17,12 +33,12 @@ const ResumeCard = ({ resume }: { resume: Resume }) => {
           <h2 className="md:pl-2 !md:text-lg !text-xs">{resume.jobTitle}</h2>
         </div>
         <div>
-          <ScoreCircle score={resume.feedback.overallScore} />
+          <ScoreCircle score={resume.feedback.ATS.score} />
         </div>
       </div>
       <div className=" w-[250px] h-[301px] md:w-[380px] md:h-[402px] overflow-hidden rounded-2xl">
         <img
-          src={resume.imagePath}
+          src={resumeUrl}
           alt="resume"
           className=" object-cover rounded-2xl w-fit h-fit"
         />

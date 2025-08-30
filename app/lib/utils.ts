@@ -1,3 +1,7 @@
+import type { ClassValue } from "clsx";
+import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
+
 //write me a function with take a file and return his size  in human readable format (KB, MB, gb)
 export function formatFileSize(size: number): string {
   if (size < 1024) {
@@ -9,4 +13,7 @@ export function formatFileSize(size: number): string {
   } else {
     return (size / (1024 * 1024 * 1024)).toFixed(2) + " GB";
   }
+}
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
