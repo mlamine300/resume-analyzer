@@ -13,6 +13,7 @@ const resume = () => {
   const navigate = useNavigate();
   const [resumeData, setResumeData] = useState<Resume | null>(null);
   const [resumeUrl, setResumeUrl] = useState("");
+  const [loading, setLoading] = useState(true);
   //   useEffect(() => {
   //     if (!auth.isAuthenticated) {
   //       navigate(`/auth?next=resume/${id}`);
@@ -26,6 +27,7 @@ const resume = () => {
       if (!blob) return;
       let url = URL.createObjectURL(blob);
       setResumeUrl(url);
+      setLoading(false);
       console.log(url);
     };
     loadResume();
@@ -65,7 +67,15 @@ const resume = () => {
       {resumeData && (
         <section className="main-section !max-w-8xl items-start  !mx-auto !my-8 !p-8 flex flex-col md:flex-row gap-8">
           <div className="w-full h-full min-h-screen p-8 bg-white/70 rounded-3xl shadow-2xl flex items-center justify-center">
-            <img src={resumeUrl} alt="resume" className="rounded-2xl" />
+            {loading ? (
+              <div className="loader"></div>
+            ) : (
+              <img
+                src={resumeUrl}
+                alt="resume"
+                className="rounded-2xl w-full h-full"
+              />
+            )}
           </div>
           <div className="w-full h-full min-h-screen p-8 bg-white/70 rounded-3xl shadow-2xl flex flex-col items-start justify-start gap-4">
             <h2 className="text-4xl font-bold !text-black">Resume Review</h2>

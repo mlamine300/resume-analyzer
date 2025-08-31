@@ -82,18 +82,6 @@ const Content = ({ feedback }: { feedback: any }) => {
           </AccordionContent>
         </AccordionItem>
         {/* -------------------------------- */}
-        <AccordionItem id="improvementChecklist">
-          <AccordionHeader itemId="improvementChecklist" iconPosition="right">
-            <div className="flex flex-cols gap-8 items-center">
-              <p className="text-2xl font-semibold !text-black">
-                Resume Improvement Checklist
-              </p>
-            </div>
-          </AccordionHeader>
-          <AccordionContent itemId="improvementChecklist" className="bg-white">
-            <p>This is the content of section 5.</p>
-          </AccordionContent>
-        </AccordionItem>
       </Accordion>
     </div>
   );

@@ -10,10 +10,10 @@ const ATS = ({ ats }: { ats: feedbackDetails }) => {
 
   const badgeColor =
     ats.score < 50
-      ? "bg-badge-red/40"
+      ? "bg-badge-red"
       : ats.score < 70
-        ? "bg-badge-yellow/40"
-        : "bg-badge-green/40";
+        ? "bg-badge-yellow"
+        : "bg-badge-green";
   const textColor =
     ats.score < 50
       ? "text-badge-red-text"

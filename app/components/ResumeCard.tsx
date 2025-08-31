@@ -7,6 +7,7 @@ import { usePuterStore } from "~/lib/puter";
 const ResumeCard = ({ resume }: { resume: Resume }) => {
   const { fs } = usePuterStore();
   const [resumeUrl, setResumeUrl] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadResume = async () => {
@@ -14,7 +15,7 @@ const ResumeCard = ({ resume }: { resume: Resume }) => {
       if (!blob) return;
       let url = URL.createObjectURL(blob);
       setResumeUrl(url);
-      console.log(url);
+      setLoading(false);
     };
 
     loadResume();
@@ -37,11 +38,17 @@ const ResumeCard = ({ resume }: { resume: Resume }) => {
         </div>
       </div>
       <div className=" w-[250px] h-[301px] md:w-[380px] md:h-[402px] overflow-hidden rounded-2xl">
-        <img
-          src={resumeUrl}
-          alt="resume"
-          className=" object-cover rounded-2xl w-fit h-fit"
-        />
+        {loading ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <img
+            src={resumeUrl}
+            alt="resume"
+            className=" object-cover rounded-2xl w-fit h-fit"
+          />
+        )}
       </div>
     </Link>
   );

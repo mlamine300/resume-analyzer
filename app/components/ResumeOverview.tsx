@@ -15,7 +15,7 @@ const ResumeOverview = ({ feedback }: { feedback: any }) => {
         </div>
       </div>
       <div className="w-full flex flex-col gap-2">
-        <div className="w-full flex flex-row  items-center bg-badge-white gap-4 bg- rounded-lg p-4 ">
+        <div className="w-full flex flex-row  items-center bg-badge-white gap-4 bg- rounded-lg p-4  my-4 ">
           <p className="text-2xl font-medium text-dark-200">tone & Style</p>
           <ScoreBadge score={feedback.toneAndStyle.score} />
 
